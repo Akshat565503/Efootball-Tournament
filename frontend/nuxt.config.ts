@@ -9,6 +9,11 @@ export default defineNuxtConfig({
     '@nuxtjs/tailwindcss',
   ],
 
+  sourcemap: {
+    server: false,
+    client: false,
+  },
+
   runtimeConfig: {
     public: {
       apiBase: process.env.NUXT_PUBLIC_API_BASE || 'http://localhost:4000',

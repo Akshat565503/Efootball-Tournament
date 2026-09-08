@@ -88,35 +88,108 @@
         </div>
 
         <!-- Eligibility -->
-        <div class="p-4 rounded-xl bg-glass-light/50 border border-glass-border">
-          <label class="block text-sm font-medium text-gray-300 mb-2">Team Eligibility Restrictions (Optional)</label>
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <input v-model="eligibility.league" type="text" placeholder="League (e.g. Premier League)"
-                   class="input-glass text-sm" />
-            <input v-model="eligibility.country" type="text" placeholder="Country (e.g. England)"
-                   class="input-glass text-sm" />
-            <input v-model="eligibility.club" type="text" placeholder="Club (e.g. Arsenal)"
-                   class="input-glass text-sm" />
-            <input v-model="eligibility.region" type="text" placeholder="Region (e.g. Europe)"
-                   class="input-glass text-sm" />
+        <div class="glass-card-static p-5 border-glass-border">
+          <div class="flex items-center justify-between mb-3">
+            <label class="block text-sm font-semibold text-white">Team Eligibility Restrictions (Optional)</label>
+            <span class="text-[11px] px-2 py-0.5 rounded bg-glass-medium text-gray-400">Squad Rules</span>
           </div>
-          <p class="text-xs text-gray-500 mt-2">Leave empty for open tournaments with no squad restrictions.</p>
+          <p class="text-xs text-gray-400 mb-4">Set specific squad criteria, or leave empty for an open tournament with no restrictions.</p>
+          
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-medium text-gray-400 mb-1">🏆 League</label>
+              <input v-model="eligibility.league" type="text" placeholder="e.g. Premier League, Serie A"
+                     class="input-glass !py-2.5 text-sm" />
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-gray-400 mb-1">🌍 Country</label>
+              <input v-model="eligibility.country" type="text" placeholder="e.g. England, Spain, Brazil"
+                     class="input-glass !py-2.5 text-sm" />
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-gray-400 mb-1">🛡️ Club</label>
+              <input v-model="eligibility.club" type="text" placeholder="e.g. Arsenal, Real Madrid"
+                     class="input-glass !py-2.5 text-sm" />
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-gray-400 mb-1">🌐 Region</label>
+              <input v-model="eligibility.region" type="text" placeholder="e.g. Europe, South America"
+                     class="input-glass !py-2.5 text-sm" />
+            </div>
+          </div>
         </div>
 
-        <!-- Banner URL -->
-        <div>
-          <label class="block text-sm font-medium text-gray-300 mb-1.5">Banner Image URL (Optional)</label>
-          <input 
-            v-model="form.banner_url" 
-            type="url"
-            placeholder="https://images.unsplash.com/..."
-            class="input-glass" 
-            :class="{ '!border-accent-red/60': touched.banner && !isBannerValid }"
-            @blur="touched.banner = true"
-          />
-          <p v-if="touched.banner && !isBannerValid" class="text-accent-red text-xs mt-1.5 flex items-center gap-1">
-            <span>⚠️</span> Please enter a valid URL starting with http:// or https://
-          </p>
+        <!-- Banner Image (Upload or URL) -->
+        <div class="glass-card-static p-5 border-glass-border">
+          <div class="flex items-center justify-between mb-3">
+            <label class="block text-sm font-semibold text-white">Tournament Banner Image (Optional)</label>
+            <!-- Mode Switcher -->
+            <div class="flex items-center gap-1 bg-glass-medium p-1 rounded-xl border border-glass-border">
+              <button 
+                type="button" 
+                @click="bannerMode = 'upload'"
+                class="px-3 py-1 rounded-lg text-xs font-medium transition-all"
+                :class="bannerMode === 'upload' ? 'bg-gradient-neon text-pitch-950 font-semibold shadow-neon-green' : 'text-gray-400 hover:text-white'">
+                📁 Upload File
+              </button>
+              <button 
+                type="button" 
+                @click="bannerMode = 'url'"
+                class="px-3 py-1 rounded-lg text-xs font-medium transition-all"
+                :class="bannerMode === 'url' ? 'bg-gradient-neon text-pitch-950 font-semibold shadow-neon-green' : 'text-gray-400 hover:text-white'">
+                🔗 Image URL
+              </button>
+            </div>
+          </div>
+
+          <!-- Mode 1: File Upload -->
+          <div v-if="bannerMode === 'upload'">
+            <div v-if="!form.banner_url"
+                 @click="triggerFileInput"
+                 @dragover.prevent="isDragging = true"
+                 @dragleave.prevent="isDragging = false"
+                 @drop.prevent="handleFileDrop"
+                 class="border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition-all duration-200"
+                 :class="isDragging ? 'border-neon-green bg-neon-green/5' : 'border-glass-border hover:border-gray-500 hover:bg-glass-light/30'">
+              <input ref="fileInputRef" type="file" accept="image/png, image/jpeg, image/webp, image/gif" class="hidden" @change="handleFileSelect" />
+              <div class="w-12 h-12 rounded-full bg-glass-light mx-auto flex items-center justify-center text-2xl mb-2 text-neon-green">
+                📷
+              </div>
+              <p class="text-sm font-medium text-white mb-1">Click to upload or drag & drop</p>
+              <p class="text-xs text-gray-400">PNG, JPG, WEBP up to 5MB</p>
+            </div>
+
+            <!-- Preview if uploaded -->
+            <div v-else class="relative rounded-xl overflow-hidden border border-glass-border group">
+              <img :src="form.banner_url" alt="Banner Preview" class="w-full h-44 object-cover" />
+              <div class="absolute inset-0 bg-pitch-950/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
+                <button type="button" @click="triggerFileInput" class="btn-glass !py-1.5 !px-3 text-xs">Change Image</button>
+                <button type="button" @click="clearBanner" class="btn-danger !py-1.5 !px-3 text-xs">Remove</button>
+              </div>
+              <input ref="fileInputRef" type="file" accept="image/png, image/jpeg, image/webp, image/gif" class="hidden" @change="handleFileSelect" />
+            </div>
+            <p v-if="uploadError" class="text-accent-red text-xs mt-2">{{ uploadError }}</p>
+          </div>
+
+          <!-- Mode 2: URL Input -->
+          <div v-else class="space-y-3">
+            <input 
+              v-model="form.banner_url" 
+              type="url"
+              placeholder="https://images.unsplash.com/photo-..."
+              class="input-glass !py-2.5 text-sm" 
+              :class="{ '!border-accent-red/60': touched.banner && !isBannerValid }"
+              @blur="touched.banner = true"
+            />
+            <p v-if="touched.banner && !isBannerValid" class="text-accent-red text-xs flex items-center gap-1">
+              <span>⚠️</span> Please enter a valid URL starting with http:// or https://
+            </p>
+
+            <!-- URL Preview -->
+            <div v-if="form.banner_url && isBannerValid" class="relative rounded-xl overflow-hidden border border-glass-border">
+              <img :src="form.banner_url" alt="Banner Preview" class="w-full h-36 object-cover" @error="uploadError = 'Could not load image from this URL'" />
+            </div>
+          </div>
         </div>
 
         <!-- Error Alert Banner -->
@@ -180,6 +253,10 @@ const touched = reactive({
   banner: false,
 })
 
+const bannerMode = ref<'upload' | 'url'>('upload')
+const fileInputRef = ref<HTMLInputElement | null>(null)
+const isDragging = ref(false)
+const uploadError = ref('')
 const creating = ref(false)
 const error = ref('')
 
@@ -190,8 +267,10 @@ const isNameValid = computed(() => {
 
 const isBannerValid = computed(() => {
   if (!form.banner_url || !form.banner_url.trim()) return true
+  const val = form.banner_url.trim()
+  if (val.startsWith('data:image/')) return true
   try {
-    const url = new URL(form.banner_url.trim())
+    const url = new URL(val)
     return url.protocol === 'http:' || url.protocol === 'https:'
   } catch {
     return false
@@ -208,6 +287,56 @@ const isFormValid = computed(() => {
   return isNameValid.value && isBannerValid.value
 })
 
+function triggerFileInput() {
+  fileInputRef.value?.click()
+}
+
+function handleFileSelect(event: Event) {
+  const target = event.target as HTMLInputElement
+  const file = target.files?.[0]
+  if (file) {
+    processImageFile(file)
+  }
+}
+
+function handleFileDrop(event: DragEvent) {
+  isDragging.value = false
+  const file = event.dataTransfer?.files?.[0]
+  if (file) {
+    processImageFile(file)
+  }
+}
+
+function processImageFile(file: File) {
+  uploadError.value = ''
+  if (!file.type.startsWith('image/')) {
+    uploadError.value = 'Please select a valid image file (PNG, JPG, WEBP).'
+    return
+  }
+
+  if (file.size > 5 * 1024 * 1024) {
+    uploadError.value = 'Image size must be less than 5MB.'
+    return
+  }
+
+  const reader = new FileReader()
+  reader.onload = (e) => {
+    form.banner_url = e.target?.result as string
+  }
+  reader.onerror = () => {
+    uploadError.value = 'Failed to read image file.'
+  }
+  reader.readAsDataURL(file)
+}
+
+function clearBanner() {
+  form.banner_url = ''
+  uploadError.value = ''
+  if (fileInputRef.value) {
+    fileInputRef.value.value = ''
+  }
+}
+
 async function handleCreate() {
   touched.name = true
   touched.banner = true
@@ -218,7 +347,7 @@ async function handleCreate() {
   }
 
   if (!isBannerValid.value) {
-    error.value = 'Please provide a valid image URL for the banner.'
+    error.value = 'Please provide a valid image URL or uploaded file for the banner.'
     return
   }
 

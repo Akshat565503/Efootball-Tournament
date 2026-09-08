@@ -16,13 +16,24 @@ const httpServer = createServer(app);
 const PORT = parseInt(process.env.PORT || "4000", 10);
 const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:3000";
 
+import helmet from "helmet";
+import rateLimit from "express-rate-limit";
+
 // ─── Middleware ──────────────────────────────────────────────────────────────
 
+// 1. Security Headers
+app.use(
+  helmet({
+    crossOriginResourcePolicy: { policy: "cross-origin" },
+  })
+);
+
+// 2. Strict CORS Whitelist
 const allowedOrigins = [
   FRONTEND_URL,
   "http://localhost:3000",
   "http://localhost:3001",
-];
+].filter(Boolean);
 
 app.use(
   cors({
@@ -30,23 +41,28 @@ app.use(
       // Allow requests with no origin (mobile apps, curl, server-to-server)
       if (!origin) return callback(null, true);
 
-      if (
-        allowedOrigins.includes(origin) ||
-        origin.endsWith(".vercel.app") ||
-        origin.endsWith(".netlify.app") ||
-        origin.startsWith("http://localhost:")
-      ) {
+      if (allowedOrigins.includes(origin)) {
         return callback(null, true);
       }
 
-      return callback(null, true);
+      return callback(new Error(`CORS policy violation: Origin '${origin}' is not allowed`));
     },
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     credentials: true,
   })
 );
 
-app.use(express.json({ limit: "10mb" }));
+// 3. API Rate Limiting (300 requests per 15 min window)
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 300,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: "Too many requests from this IP. Please try again after a few minutes." },
+});
+app.use("/api/", apiLimiter);
+
+app.use(express.json({ limit: "2mb" }));
 
 // ─── Routes ─────────────────────────────────────────────────────────────────
 

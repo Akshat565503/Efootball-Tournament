@@ -101,18 +101,23 @@
             </div>
           </div>
           <div>
-            <h4 class="font-heading font-semibold text-white mb-3 text-sm">Connect</h4>
+            <h4 class="font-heading font-semibold text-white mb-3 text-sm">Legal & Security</h4>
             <div class="space-y-2">
-              <a href="#" class="block text-sm text-gray-500 hover:text-neon-green transition-colors">Discord</a>
-              <a href="#" class="block text-sm text-gray-500 hover:text-neon-green transition-colors">YouTube</a>
-              <a href="#" class="block text-sm text-gray-500 hover:text-neon-green transition-colors">Twitter</a>
+              <NuxtLink to="/privacy" class="block text-sm text-gray-500 hover:text-neon-green transition-colors">Privacy Policy</NuxtLink>
+              <NuxtLink to="/terms" class="block text-sm text-gray-500 hover:text-neon-green transition-colors">Terms of Service</NuxtLink>
+              <a href="/.well-known/security.txt" class="block text-sm text-gray-500 hover:text-neon-green transition-colors">Security Disclosure</a>
             </div>
           </div>
         </div>
         <div class="section-divider"></div>
-        <p class="text-center text-gray-600 text-xs">
-          © {{ new Date().getFullYear() }} eFootball Arena. Not affiliated with Konami.
-        </p>
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-gray-600">
+          <p>© {{ new Date().getFullYear() }} eFootball Arena. Not affiliated with Konami.</p>
+          <div class="flex items-center gap-4">
+            <NuxtLink to="/privacy" class="hover:underline">Privacy</NuxtLink>
+            <NuxtLink to="/terms" class="hover:underline">Terms</NuxtLink>
+            <a href="/.well-known/security.txt" class="hover:underline">Security</a>
+          </div>
+        </div>
       </div>
     </footer>
   </div>
