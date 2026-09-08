@@ -1,0 +1,281 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── CSS Custom Properties ──────────────────────────────────────────────── */
+
+:root {
+  --bg-primary: #0a0e1a;
+  --bg-secondary: #050810;
+  --neon-green: #39ff14;
+  --neon-blue: #00d4ff;
+  --accent-gold: #ffd700;
+  --glass-bg: rgba(255, 255, 255, 0.06);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-hover: rgba(255, 255, 255, 0.12);
+}
+
+/* ─── Base Styles ────────────────────────────────────────────────────────── */
+
+@layer base {
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background-color: var(--bg-primary);
+    color: #e2e8f0;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Outfit', system-ui, sans-serif;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+
+  ::selection {
+    background-color: rgba(57, 255, 20, 0.3);
+    color: #fff;
+  }
+}
+
+/* ─── Component Styles ───────────────────────────────────────────────────── */
+
+@layer components {
+  /* Glassmorphism Cards */
+  .glass-card {
+    @apply relative rounded-2xl border transition-all duration-300;
+    background: var(--glass-bg);
+    border-color: var(--glass-border);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+  }
+
+  .glass-card:hover {
+    background: var(--glass-hover);
+    border-color: rgba(255, 255, 255, 0.12);
+    transform: translateY(-2px);
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.3);
+  }
+
+  .glass-card-static {
+    @apply relative rounded-2xl border;
+    background: var(--glass-bg);
+    border-color: var(--glass-border);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+  }
+
+  /* Neon Buttons */
+  .btn-neon {
+    @apply relative px-6 py-3 rounded-xl font-heading font-semibold text-sm uppercase tracking-wider 
+           transition-all duration-300 overflow-hidden;
+    background: linear-gradient(135deg, #39ff14, #00d4ff);
+    color: #0a0e1a;
+  }
+
+  .btn-neon:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 30px rgba(57, 255, 20, 0.4), 0 0 60px rgba(57, 255, 20, 0.15);
+  }
+
+  .btn-neon:active {
+    transform: translateY(0);
+  }
+
+  .btn-neon-outline {
+    @apply relative px-6 py-3 rounded-xl font-heading font-semibold text-sm uppercase tracking-wider 
+           transition-all duration-300 border-2;
+    border-color: #39ff14;
+    color: #39ff14;
+    background: transparent;
+  }
+
+  .btn-neon-outline:hover {
+    background: rgba(57, 255, 20, 0.1);
+    box-shadow: 0 0 20px rgba(57, 255, 20, 0.2);
+  }
+
+  .btn-glass {
+    @apply relative px-6 py-3 rounded-xl font-heading font-semibold text-sm uppercase tracking-wider 
+           transition-all duration-300 border text-white;
+    background: var(--glass-bg);
+    border-color: var(--glass-border);
+    backdrop-filter: blur(8px);
+  }
+
+  .btn-glass:hover {
+    background: var(--glass-hover);
+    border-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-1px);
+  }
+
+  .btn-danger {
+    @apply relative px-6 py-3 rounded-xl font-heading font-semibold text-sm uppercase tracking-wider 
+           transition-all duration-300 border-2;
+    border-color: #ff3366;
+    color: #ff3366;
+    background: rgba(255, 51, 102, 0.1);
+  }
+
+  .btn-danger:hover {
+    background: rgba(255, 51, 102, 0.2);
+    box-shadow: 0 0 20px rgba(255, 51, 102, 0.2);
+  }
+
+  /* Gradient Text */
+  .text-gradient-neon {
+    background: linear-gradient(135deg, #39ff14, #00d4ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .text-gradient-gold {
+    background: linear-gradient(135deg, #ffd700, #ff6b2b);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Input Fields */
+  .input-glass {
+    @apply w-full px-4 py-3 rounded-xl border text-white placeholder-gray-500 
+           transition-all duration-300 outline-none;
+    background: rgba(255, 255, 255, 0.04);
+    border-color: var(--glass-border);
+  }
+
+  .input-glass:focus {
+    border-color: rgba(57, 255, 20, 0.5);
+    box-shadow: 0 0 0 3px rgba(57, 255, 20, 0.1);
+    background: rgba(255, 255, 255, 0.06);
+  }
+
+  /* Status Badges */
+  .badge {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider;
+  }
+
+  .badge-open {
+    @apply badge;
+    background: rgba(57, 255, 20, 0.15);
+    color: #39ff14;
+    border: 1px solid rgba(57, 255, 20, 0.3);
+  }
+
+  .badge-live {
+    @apply badge;
+    background: rgba(255, 51, 102, 0.15);
+    color: #ff3366;
+    border: 1px solid rgba(255, 51, 102, 0.3);
+  }
+
+  .badge-completed {
+    @apply badge;
+    background: rgba(0, 212, 255, 0.15);
+    color: #00d4ff;
+    border: 1px solid rgba(0, 212, 255, 0.3);
+  }
+
+  .badge-scheduled {
+    @apply badge;
+    background: rgba(255, 215, 0, 0.15);
+    color: #ffd700;
+    border: 1px solid rgba(255, 215, 0, 0.3);
+  }
+
+  .badge-in-progress {
+    @apply badge;
+    background: rgba(168, 85, 247, 0.15);
+    color: #a855f7;
+    border: 1px solid rgba(168, 85, 247, 0.3);
+  }
+
+  /* LIVE indicator */
+  .live-indicator {
+    @apply inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider;
+    background: rgba(255, 51, 102, 0.2);
+    color: #ff3366;
+    border: 1px solid rgba(255, 51, 102, 0.4);
+  }
+
+  .live-indicator::before {
+    content: '';
+    @apply w-2 h-2 rounded-full bg-red-500;
+    animation: livePulse 1.5s ease-in-out infinite;
+  }
+
+  /* Section divider */
+  .section-divider {
+    @apply w-full h-px my-8;
+    background: linear-gradient(90deg, transparent, rgba(57, 255, 20, 0.3), transparent);
+  }
+}
+
+/* ─── Utility Styles ─────────────────────────────────────────────────────── */
+
+@layer utilities {
+  .glow-green {
+    box-shadow: 0 0 20px rgba(57, 255, 20, 0.3), 0 0 40px rgba(57, 255, 20, 0.1);
+  }
+
+  .glow-blue {
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.3), 0 0 40px rgba(0, 212, 255, 0.1);
+  }
+
+  .glow-gold {
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.3), 0 0 40px rgba(255, 215, 0, 0.1);
+  }
+
+  .text-shadow-glow {
+    text-shadow: 0 0 20px rgba(57, 255, 20, 0.5);
+  }
+}
+
+/* ─── Scrollbar ──────────────────────────────────────────────────────────── */
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #050810;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* ─── Page Transitions ───────────────────────────────────────────────────── */
+
+.page-enter-active,
+.page-leave-active {
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.page-enter-from {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.page-leave-to {
+  opacity: 0;
+  transform: translateY(-10px);
+}
